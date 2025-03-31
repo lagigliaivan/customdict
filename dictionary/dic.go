@@ -23,7 +23,7 @@ func (d *Dictionary) Add(word string) {
 	})
 }
 
-func (d *Dictionary) IsPresent(word string) bool {
+func (d *Dictionary) Contains(word string) bool {
 	var rest bool
 	d.lock(func() {
 		rest = d.words[word]

@@ -21,7 +21,7 @@ func TestAddWordToDictionary(t *testing.T) {
 	dic := dictionary.New()
 
 	dic.Add("hello")
-	ok := dic.IsPresent("hello")
+	ok := dic.Contains("hello")
 
 	if !ok {
 		t.Errorf("Expected %v but got %v", true, ok)
@@ -39,12 +39,12 @@ func TestSearchWordInDictionary(t *testing.T) {
 	dic.Add("foo")
 	dic.Add("bar")
 
-	ok := dic.IsPresent("hello")
+	ok := dic.Contains("hello")
 	if !ok {
 		t.Errorf("Expected %v but got %v", true, ok)
 	}
 
-	ok = dic.IsPresent("hell")
+	ok = dic.Contains("hell")
 	if ok {
 		t.Errorf("Expected %v but got %v", false, ok)
 	}
@@ -66,22 +66,22 @@ func TestAutoComplete(t *testing.T) {
 		t.Errorf("Expected %v but got %v", 4, words.Len())
 	}
 
-	ok := words.IsPresent("hello")
+	ok := words.Contains("hello")
 	if !ok {
 		t.Errorf("Expected %v but got %v", true, ok)
 	}
 
-	ok = words.IsPresent("hello world")
+	ok = words.Contains("hello world")
 	if !ok {
 		t.Errorf("Expected %v but got %v", false, ok)
 	}
 
-	ok = words.IsPresent("world hello")
+	ok = words.Contains("world hello")
 	if !ok {
 		t.Errorf("Expected %v but got %v", false, ok)
 	}
 
-	ok = words.IsPresent("world hell")
+	ok = words.Contains("world hell")
 	if !ok {
 		t.Errorf("Expected %v but got %v", false, ok)
 	}
@@ -99,7 +99,7 @@ func TestRemoveWordFromDictionary(t *testing.T) {
 	dic.Add("bar")
 
 	dic.Remove("hello")
-	ok := dic.IsPresent("hello")
+	ok := dic.Contains("hello")
 	if ok {
 		t.Errorf("Expected %v but got %v", false, ok)
 	}
@@ -120,7 +120,7 @@ func TestRaceCondition(t *testing.T) {
 		wg.Done()
 	}()
 	go func() {
-		present = dictionary.IsPresent("hello")
+		present = dictionary.Contains("hello")
 		wg.Done()
 	}()
 	go func() {
