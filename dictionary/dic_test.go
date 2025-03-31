@@ -1,9 +1,11 @@
 package dictionary_test
 
 import (
+	"sync"
 	"testing"
 
 	"github.com/lagigliaivan/customdict/dictionary"
+	"github.com/stretchr/testify/assert"
 )
 
 // Add Word: Add a word to the dictionary.
@@ -101,4 +103,31 @@ func TestRemoveWordFromDictionary(t *testing.T) {
 	if ok {
 		t.Errorf("Expected %v but got %v", false, ok)
 	}
+}
+
+func TestRaceCondition(t *testing.T) {
+	var present bool
+
+	wg := sync.WaitGroup{}
+	wg.Add(3)
+
+	dictionary := dictionary.New()
+
+	dictionary.Add("hello")
+
+	go func() {
+		dictionary.Add("hello1")
+		wg.Done()
+	}()
+	go func() {
+		present = dictionary.IsPresent("hello")
+		wg.Done()
+	}()
+	go func() {
+		dictionary.Remove("hello1")
+		wg.Done()
+	}()
+
+	wg.Wait()
+	assert.True(t, present)
 }
