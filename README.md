@@ -12,3 +12,8 @@ Additional items
 
 Create unit tests to showcase every functionality.
 Assume the dictionary would work in a concurrent environment.
+
+
+# run tests
+
+$go test ./...
